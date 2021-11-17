@@ -1,0 +1,164 @@
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/31/19 10:48:18
+example.asm						     Page 1 - 1
+
+
+				; Program to d calculates the sum and the average
+				; (sum/4) of the grades.
+				; Author:  Arturo A. Serdan
+				; Date:    05/31/2019
+
+				.586
+				.MODEL FLAT
+
+				INCLUDE io.h            ; header file for input/output
+			      C ; IO.H -- header file for I/O macros (listing suppressed)
+			      C .NOLIST      ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+
+				.STACK 4096
+
+ 00000000			.DATA
+ 00000000 00000000		sum				DWORD   ?
+ 00000004 00000000		ave				DWORD	?
+ 00000008 00000004		divisor			DWORD	4
+
+ 0000000C 45 6E 74 65 72	prompt1 BYTE    "Enter first grade", 0
+	   20 66 69 72 73
+	   74 20 67 72 61
+	   64 65 00
+ 0000001E 45 6E 74 65 72	prompt2 BYTE    "Enter second grade", 0
+	   20 73 65 63 6F
+	   6E 64 20 67 72
+	   61 64 65 00
+ 00000031 45 6E 74 65 72	prompt3 BYTE    "Enter third grade", 0
+	   20 74 68 69 72
+	   64 20 67 72 61
+	   64 65 00
+ 00000043 45 6E 74 65 72	prompt4 BYTE    "Enter fourth grade", 0
+	   20 66 6F 75 72
+	   74 68 20 67 72
+	   61 64 65 00
+
+ 00000056  00000028 [		string  BYTE    40 DUP (?)
+	    00
+	   ]
+ 0000007E 54 68 65 20 73	resultLbl BYTE  "The sum and the average are: ", 0
+	   75 6D 20 61 6E
+	   64 20 74 68 65
+	   20 61 76 65 72
+	   61 67 65 20 61
+	   72 65 3A 20 00
+ 0000009C  0000000B [		sm		BYTE	11 DUP (?),  " - Sum ", 0ah, 0dh
+	    00
+	   ] 20 2D 20 53
+	   75 6D 20 0A 0D
+ 000000B0  0000000B [		av		BYTE	11 DUP (?), " - Average ", 0
+	    00
+	   ] 20 2D 20 41
+	   76 65 72 61 67
+	   65 20 00
+
+ 00000000			.CODE
+ 00000000			_MainProc PROC
+				        input   prompt1, string, 40      ; read ASCII characters
+				        atod    string					 ; convert to integer
+ 0000002D  A3 00000000 R	        mov     sum, eax					 ; store in memory
+						
+
+				        input   prompt2, string, 40      ; read ASCII characters
+				        atod    string					 ; convert to integer
+ 0000005F  01 05 00000000 R			add		sum, eax				 ; adds eax (2nd grade) to sum
+
+						input   prompt3, string, 40      ; repeat for	grade 3 
+				        atod    string
+ 00000092  01 05 00000000 R			add		sum, eax
+				        
+						input   prompt4, string, 40      ; repeat for grade 4
+				        atod    string
+ 000000C5  01 05 00000000 R	        add		sum, eax
+
+ 000000CB  A1 00000000 R			mov		eax, sum				; moves sum into eax for divison
+ 000000D0  99					cdq								; prepares EDX for division
+ 000000D1  F7 35 00000008 R			div		divisor					; divides sum/eax by divisor (4)
+ 000000D7  A3 00000004 R			mov		ave, eax				; moves quotient into average
+
+				       
+				        
+						dtoa	av, ave					; convert to ASCII characters
+						dtoa    sm, sum					; convert to ASCII characters
+						output  resultLbl, sm 			; output label and sum
+
+ 0000012D  B8 00000000		        mov     eax, 0  ; exit with return code 0
+ 00000132  C3			        ret
+ 00000133			_MainProc ENDP
+				END                             ; end of source code
+
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/31/19 10:48:18
+example.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atow . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+wtoa . . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 000000C7 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000133 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+_MainProc  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000133 Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+_getInput  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+_showOutput  . . . . . . . . . .	L Near	 00000000 FLAT	External
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atowproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+ave  . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+av . . . . . . . . . . . . . . .	Byte	 000000B0 _DATA	
+divisor  . . . . . . . . . . . .	DWord	 00000008 _DATA	
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+prompt1  . . . . . . . . . . . .	Byte	 0000000C _DATA	
+prompt2  . . . . . . . . . . . .	Byte	 0000001E _DATA	
+prompt3  . . . . . . . . . . . .	Byte	 00000031 _DATA	
+prompt4  . . . . . . . . . . . .	Byte	 00000043 _DATA	
+resultLbl  . . . . . . . . . . .	Byte	 0000007E _DATA	
+sm . . . . . . . . . . . . . . .	Byte	 0000009C _DATA	
+string . . . . . . . . . . . . .	Byte	 00000056 _DATA	
+sum  . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+wtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+
+	   0 Warnings
+	   0 Errors

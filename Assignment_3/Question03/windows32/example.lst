@@ -1,0 +1,142 @@
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/25/19 12:59:40
+example.asm						     Page 1 - 1
+
+
+				; The program that prompts for and inputs the length,
+				; width, and height of a box and computes and displays 
+				; its volume (length * width * height).
+				; Author:  Arturo A. Serdan
+				; Date:    05/26/2019
+
+				.586
+				.MODEL FLAT
+
+				INCLUDE io.h            ; header file for input/output
+			      C ; IO.H -- header file for I/O macros (listing suppressed)
+			      C .NOLIST      ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+
+				.STACK 4096
+
+ 00000000			.DATA
+ 00000000 00000000		len DWORD   ?
+ 00000004 00000000		wid DWORD   ?
+ 00000008 00000000		hei DWORD   ?
+
+ 0000000C 45 6E 74 65 72	prompt1 BYTE    "Enter Length", 0
+	   20 4C 65 6E 67
+	   74 68 00
+ 00000019 45 6E 74 65 72	prompt2 BYTE    "Enter Width", 0
+	   20 57 69 64 74
+	   68 00
+ 00000025 45 6E 74 65 72	prompt3 BYTE    "Enter Height", 0
+	   20 48 65 69 67
+	   68 74 00
+
+ 00000032  00000028 [		string  BYTE    40 DUP (?)
+	    00
+	   ]
+ 0000005A 54 68 65 20 76	resultLbl BYTE  "The volume is", 0
+	   6F 6C 75 6D 65
+	   20 69 73 00
+ 00000068  0000000B [		vol     DWORD    11 DUP (?), 0
+	    00000000
+	   ] 00000000
+
+
+
+ 00000000			.CODE
+ 00000000			_MainProc PROC
+						
+						input   prompt1, string, 40      ; read ASCII characters
+				        atod    string					 ; convert to integer
+ 0000002D  A3 00000000 R	        mov     len, eax				 ; store in len
+
+				        input   prompt2, string, 40      ; repeat for width
+				        atod    string
+ 0000005F  A3 00000004 R	        mov     wid, eax
+
+						input   prompt3, string, 40      ; repeat for height
+				        atod    string
+ 00000091  A3 00000008 R	        mov     hei, eax
+						
+				        
+ 00000096  A1 00000000 R			mov		eax, len
+ 0000009B  F7 25 00000004 R			mul		wid
+ 000000A1  F7 25 00000008 R			mul		hei
+
+				        dtoa    vol, eax				; convert to ASCII characters
+				        output  resultLbl, vol			; output label, and volume
+
+ 000000D8  B8 00000000		        mov     eax, 0  ; exit with return code 0
+ 000000DD  C3			        ret
+ 000000DE			_MainProc ENDP
+				END                             ; end of source code
+
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/25/19 12:59:40
+example.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atow . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+wtoa . . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000098 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000DE Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+_MainProc  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000DE Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+_getInput  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+_showOutput  . . . . . . . . . .	L Near	 00000000 FLAT	External
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atowproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+hei  . . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+len  . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+prompt1  . . . . . . . . . . . .	Byte	 0000000C _DATA	
+prompt2  . . . . . . . . . . . .	Byte	 00000019 _DATA	
+prompt3  . . . . . . . . . . . .	Byte	 00000025 _DATA	
+resultLbl  . . . . . . . . . . .	Byte	 0000005A _DATA	
+string . . . . . . . . . . . . .	Byte	 00000032 _DATA	
+vol  . . . . . . . . . . . . . .	DWord	 00000068 _DATA	
+wid  . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+wtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+
+	   0 Warnings
+	   0 Errors

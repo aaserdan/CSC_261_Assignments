@@ -1,0 +1,143 @@
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/24/19 21:14:11
+Question01.asm						     Page 1 - 1
+
+
+				; Program to evaluate the expression -(x + y - 2z +1) 
+				; for doubleword values from an input
+				; Author:  Arturo A. Serdan
+				; Date:    05/26/2019
+
+				.586
+				.MODEL FLAT
+
+				INCLUDE io.h            ; header file for input/output
+			      C ; IO.H -- header file for I/O macros (listing suppressed)
+			      C .NOLIST      ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+
+				.STACK 4096
+
+ 00000000			.DATA
+ 00000000 00000000		x DWORD   ?
+ 00000004 00000000		y DWORD   ?
+ 00000008 00000000		z DWORD   ?
+ 0000000C 45 6E 74 65 72	prompt1 BYTE    "Enter x", 0
+	   20 78 00
+ 00000014 45 6E 74 65 72	prompt2 BYTE    "Enter y", 0
+	   20 79 00
+ 0000001C 45 6E 74 65 72	prompt3 BYTE    "Enter z", 0
+	   20 7A 00
+ 00000024  00000028 [		string  BYTE    40 DUP (?)
+	    00
+	   ]
+ 0000004C 54 68 65 20 72	resultLbl BYTE  "The result for the expression", 0
+	   65 73 75 6C 74
+	   20 66 6F 72 20
+	   74 68 65 20 65
+	   78 70 72 65 73
+	   73 69 6F 6E 00
+ 0000006A  0000000B [		expr     BYTE    11 DUP (?), 0
+	    00
+	   ] 00
+
+ 00000000			.CODE
+ 00000000			_MainProc PROC
+				        input   prompt1, string, 40      ; read ASCII characters
+				        atod    string          ; convert to integer
+ 0000002D  A3 00000000 R	        mov     x, eax    ; store in memory
+
+				        input   prompt2, string, 40      ; repeat for y
+				        atod    string
+ 0000005F  A3 00000004 R	        mov     y, eax
+
+						input   prompt3, string, 40      ; repeat for z
+				        atod    string
+ 00000091  A3 00000008 R	        mov     z, eax
+
+				        
+ 00000096  A1 00000000 R			mov eax, x
+ 0000009B  03 05 00000004 R			add eax, y
+ 000000A1  8B 1D 00000008 R			mov ebx, z
+ 000000A7  03 DB				add ebx, ebx
+ 000000A9  2B C3				sub eax, ebx
+ 000000AB  40					inc eax
+ 000000AC  F7 D8				neg eax
+
+						dtoa    expr, eax			 ; convert to ASCII characters
+
+				        output  resultLbl, expr          ; output label and expression
+						
+				        
+
+ 000000DF  B8 00000000		        mov     eax, 0  ; exit with return code 0
+ 000000E4  C3			        ret
+ 000000E5			_MainProc ENDP
+				END                             ; end of source code
+
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    05/24/19 21:14:11
+Question01.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atow . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+wtoa . . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 00000076 Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000E5 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+_MainProc  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 000000E5 Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+_getInput  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+_showOutput  . . . . . . . . . .	L Near	 00000000 FLAT	External
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atowproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+expr . . . . . . . . . . . . . .	Byte	 0000006A _DATA	
+prompt1  . . . . . . . . . . . .	Byte	 0000000C _DATA	
+prompt2  . . . . . . . . . . . .	Byte	 00000014 _DATA	
+prompt3  . . . . . . . . . . . .	Byte	 0000001C _DATA	
+resultLbl  . . . . . . . . . . .	Byte	 0000004C _DATA	
+string . . . . . . . . . . . . .	Byte	 00000024 _DATA	
+wtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+x  . . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+y  . . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+z  . . . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+
+	   0 Warnings
+	   0 Errors

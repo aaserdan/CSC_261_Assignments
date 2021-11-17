@@ -1,0 +1,81 @@
+Microsoft (R) Macro Assembler Version 14.29.30133.0	    11/17/21 17:23:07
+example.asm						     Page 1 - 1
+
+
+				; This program computes in EAX the perimeter (2*length + 2*width)
+				; of a rectangle where the length and width are in memory
+				; doublewords.
+				; Author:  Arturo A. Serdan
+				; Date:    05/26/2019
+
+				.586
+				.MODEL FLAT
+
+				.STACK  4096            ; reserve 4096-byte stack
+
+ 00000000			.DATA                   ; reserve storage for data
+ 00000000 0000003C		len  DWORD   60
+ 00000004 00000019		wid  DWORD   25
+ 00000008 00000000		per  DWORD   ?
+
+ 00000000			.CODE                           ; start of main program code
+ 00000000			main    PROC
+				        
+ 00000000  A1 00000000 R			mov     eax, len     ; len number to EAX
+ 00000005  BB 00000002				mov		ebx, 2		 ; moves 2 into ebx 
+ 0000000A  F7 E3		        mul		ebx			 ; multiply length by 2
+ 0000000C  A3 00000008 R			mov		per, eax	 ; moves eax into per
+
+ 00000011  A1 00000004 R			mov		eax, wid	 ; wid to ebx
+ 00000016  BB 00000002				mov		ebx, 2		 ; multiply width by 2
+ 0000001B  F7 E3				mul		ebx			 ; multiply width by 2
+ 0000001D  01 05 00000008 R			add		per, eax	 ; adds 2*width into per (2*length + 2*width)
+
+
+ 00000023  B8 00000000		        mov		eax, 0            ; exit with return code 0
+ 00000028  C3			        ret
+ 00000029			main    ENDP
+
+				END                             ; end of source code
+Microsoft (R) Macro Assembler Version 14.29.30133.0	    11/17/21 17:23:07
+example.asm						     Symbols 2 - 1
+
+
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000000C Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 00000029 Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+main . . . . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000029 Public
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+len  . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+per  . . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+wid  . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+
+	   0 Warnings
+	   0 Errors

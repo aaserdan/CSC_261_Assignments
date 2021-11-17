@@ -1,0 +1,183 @@
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    06/05/19 13:54:24
+example.asm						     Page 1 - 1
+
+
+				; A recursive algorithm to find the n^th Fibonacci number.
+				; Author:  Arturo A. Serdan
+				; Date:    06/07/2019
+				.586
+				.MODEL FLAT
+
+				INCLUDE io.h            ; header file for input/output
+			      C ; IO.H -- header file for I/O macros (listing suppressed)
+			      C .NOLIST      ; turn off listing
+			      C .LIST        ; begin listing
+			      C 
+
+				.STACK 4096
+
+ 00000000			.DATA
+ 00000000 00000000		n DWORD		?
+ 00000004 00000000		x DWORD		?
+ 00000008 00000000		y DWORD		?
+
+ 0000000C 45 6E 74 65 72	prompt1 BYTE    "Enter number", 0
+	   20 6E 75 6D 62
+	   65 72 00
+ 00000019  00000028 [		string  BYTE    40 DUP (?)
+	    00
+	   ]
+ 00000041 54 68 65 20 46	resultLbl BYTE  "The Fibonacci number is", 0
+	   69 62 6F 6E 61
+	   63 63 69 20 6E
+	   75 6D 62 65 72
+	   20 69 73 00
+ 00000059  0000000B [		fib     BYTE    11 DUP (?), 0
+	    00
+	   ] 00
+
+				;Displayed if an error occurs
+ 00000065 41 6E 20 65 72	ErrorRest BYTE	"An error occurred", 0
+	   72 6F 72 20 6F
+	   63 63 75 72 72
+	   65 64 00
+ 00000077 57 72 6F 6E 67	wrongInt  BYTE	"Wrong integer input",0
+	   20 69 6E 74 65
+	   67 65 72 20 69
+	   6E 70 75 74 00
+
+ 00000000			.CODE
+ 00000000			_MainProc PROC
+				        input   prompt1, string, 40      ; read ASCII characters
+				        atod    string          ; convert to integer
+ 0000002D  A3 00000000 R	        mov     n, eax			; store in memory
+ 00000032  83 F8 00				cmp		eax, 0			; compares a and 0
+ 00000035  7C 43				jnge	errorCode				; if a is less than 0
+
+ 00000037  FF 35 00000000 R			push n					; push n
+ 0000003D  E8 00000057				call Fibonacci				; fib(n)
+ 00000042  83 C4 04				add esp, 4				; remove parameter from stack
+
+				        dtoa    fib, eax        ; convert to ASCII characters
+				        output  resultLbl, fib	; output label and fib
+ 00000076  3B C0				cmp		eax,eax			; compares to itself to exit
+ 00000078  74 19				je		exitCode		; jumps to exitCode
+					
+ 0000007A				errorCode:	
+						output  ErrorRest, wrongInt          ; error output&label
+
+ 00000093				exitCode:
+ 00000093  B8 00000000		        mov     eax, 0  ; exit with return code 0
+ 00000098  C3			        ret
+ 00000099			_MainProc ENDP
+
+				; Recursively calculates the Fibonacci number of n.
+				; fin(n)
+				; if(n==0 or n==1) return n. else fib(n-1) + fib(n-2).
+ 00000099			Fibonacci PROC
+ 00000099  55					push	ebp				; save base pointer	
+ 0000009A  8B EC				mov		ebp, esp		; establish stack frame
+ 0000009C  53					push	ebx				; saves EBX
+ 0000009D  52					push	edx				; save EDX
+					
+ 0000009E  8B 45 08				mov		eax, [ebp+8]	; get address of n
+ 000000A1  83 F8 01				cmp		eax, 1			; compares n(eax) to 1
+ 000000A4  7F 04				jnle	elseB			; if n<= 1
+ 000000A6  3B C0				cmp		eax, eax		; compares eax to itself
+ 000000A8  74 20				je		exCode			; jumps to exit
+
+ 000000AA				elseB:
+ 000000AA  8B D0				mov		edx, eax		; moves n into edx
+ 000000AC  83 E8 01				sub		eax, 1			; does n-1 in eax
+ 000000AF  50					push	eax				; push n-1 (eax)
+ 000000B0  E8 FFFFFFE4				call	Fibonacci		; fib (n-1)
+ 000000B5  83 C4 04				add		esp, 4			; remove parameter from stack
+ 000000B8  8B D8				mov		ebx, eax		; saves result into ebx
+
+ 000000BA  8B C2				mov		eax, edx		; moves n into eax
+ 000000BC  83 E8 02				sub		eax, 2			; decreases by to to get n-2
+ 000000BF  50					push	eax				; push n-2(eax)
+ 000000C0  E8 FFFFFFD4				call	Fibonacci		; fin(n-2)
+ 000000C5  83 C4 04				add		esp, 4			; remove parameter from stack
+ 000000C8  03 C3				add		eax, ebx		; adds fib(n-1) and fib(n-2)
+
+ 000000CA				exCode:		
+ 000000CA  5A					pop		edx				; restore registers
+ 000000CB  5B					pop		ebx				; restore registers
+ 000000CC  5D					pop		ebp				; restore EBP
+ 000000CD  C3					ret
+ 000000CE			Fibonacci	ENDP
+
+				END                             ; end of source code
+
+Microsoft (R) Macro Assembler Version 14.20.27508.1	    06/05/19 13:54:24
+example.asm						     Symbols 2 - 1
+
+
+
+
+Macros:
+
+                N a m e                 Type
+
+atod . . . . . . . . . . . . . .	Proc
+atow . . . . . . . . . . . . . .	Proc
+dtoa . . . . . . . . . . . . . .	Proc
+input  . . . . . . . . . . . . .	Proc
+output . . . . . . . . . . . . .	Proc
+wtoa . . . . . . . . . . . . . .	Proc
+
+
+Segments and Groups:
+
+                N a m e                 Size     Length   Align   Combine Class
+
+FLAT . . . . . . . . . . . . . .	GROUP
+STACK  . . . . . . . . . . . . .	32 Bit	 00001000 Para	  Stack	  'STACK'	 
+_DATA  . . . . . . . . . . . . .	32 Bit	 0000008B Para	  Public  'DATA'	
+_TEXT  . . . . . . . . . . . . .	32 Bit	 000000CE Para	  Public  'CODE'	
+
+
+Procedures, parameters, and locals:
+
+                N a m e                 Type     Value    Attr
+
+Fibonacci  . . . . . . . . . . .	P Near	 00000099 _TEXT	Length= 00000035 Public
+  elseB  . . . . . . . . . . . .	L Near	 000000AA _TEXT	
+  exCode . . . . . . . . . . . .	L Near	 000000CA _TEXT	
+_MainProc  . . . . . . . . . . .	P Near	 00000000 _TEXT	Length= 00000099 Public
+  errorCode  . . . . . . . . . .	L Near	 0000007A _TEXT	
+  exitCode . . . . . . . . . . .	L Near	 00000093 _TEXT	
+
+
+Symbols:
+
+                N a m e                 Type     Value    Attr
+
+@CodeSize  . . . . . . . . . . .	Number	 00000000h   
+@DataSize  . . . . . . . . . . .	Number	 00000000h   
+@Interface . . . . . . . . . . .	Number	 00000000h   
+@Model . . . . . . . . . . . . .	Number	 00000007h   
+@code  . . . . . . . . . . . . .	Text   	 _TEXT
+@data  . . . . . . . . . . . . .	Text   	 FLAT
+@fardata?  . . . . . . . . . . .	Text   	 FLAT
+@fardata . . . . . . . . . . . .	Text   	 FLAT
+@stack . . . . . . . . . . . . .	Text   	 FLAT
+ErrorRest  . . . . . . . . . . .	Byte	 00000065 _DATA	
+_getInput  . . . . . . . . . . .	L Near	 00000000 FLAT	External
+_showOutput  . . . . . . . . . .	L Near	 00000000 FLAT	External
+atodproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+atowproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+dtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+fib  . . . . . . . . . . . . . .	Byte	 00000059 _DATA	
+n  . . . . . . . . . . . . . . .	DWord	 00000000 _DATA	
+prompt1  . . . . . . . . . . . .	Byte	 0000000C _DATA	
+resultLbl  . . . . . . . . . . .	Byte	 00000041 _DATA	
+string . . . . . . . . . . . . .	Byte	 00000019 _DATA	
+wrongInt . . . . . . . . . . . .	Byte	 00000077 _DATA	
+wtoaproc . . . . . . . . . . . .	L Near	 00000000 FLAT	External
+x  . . . . . . . . . . . . . . .	DWord	 00000004 _DATA	
+y  . . . . . . . . . . . . . . .	DWord	 00000008 _DATA	
+
+	   0 Warnings
+	   0 Errors
